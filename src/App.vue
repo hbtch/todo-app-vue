@@ -1,28 +1,31 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <ToDoFilter @filter="setFilteredTodos"/>
+    <ToDo :todos="filteredTodos"/>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import ToDoFilter from './components/ToDoFilter.vue';
+import ToDo from './components/ToDo.vue';
 
 export default {
-  name: 'App',
   components: {
-    HelloWorld
-  }
-}
+    ToDoFilter,
+    ToDo,
+  },
+  data() {
+    return {
+      filteredTodos: [],
+    };
+  },
+  methods: {
+    setFilteredTodos(todos) {
+      this.filteredTodos = todos;
+    },
+  },
+  created() {
+    this.setFilteredTodos(this.$store.getters.allTodos);
+  },
+};
 </script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
