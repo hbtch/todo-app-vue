@@ -1,6 +1,8 @@
 <template>
     <div>
         <h1>ToDo List</h1>
+        <input v-model="newTodo" placeholder="Введите новую задачу" />
+        <button @click="addTodo">Добавить</button>
         <p v-if="status === 'loading'">Loading...</p>
         <p v-if="status === 'error'">Error loading todos</p>
         <p v-if="status === 'idle'">Ready to fetch todos</p>
@@ -21,6 +23,11 @@
         components: {
         TodoItem,
         },
+        data() {
+        return {
+            newTodo: '', // Для ввода текста новой задачи
+        };
+    },
         computed: {
 // allTodos возвращает массив всех задач из хранилища
 // fetchStatus возвращает текущий статус загрузки задач
@@ -38,11 +45,17 @@
         },
 // подключаем vuex экшены, fetchTodos загружает задачи из хранилища, toggleTodoStatus меняет статус задачи
         methods: {
-        ...mapActions(['fetchTodos', 'toggleTodoStatus']),
+            ...mapActions(['fetchTodos', 'toggleTodoStatus']),
 // toggleTodo вызывается когда происходит событие toggle
-        toggleTodo(id) {
-            this.toggleTodoStatus(id);
-        },
+            toggleTodo(id) {
+                this.toggleTodoStatus(id);
+            },
+            addTodo() {
+                if (this.newTodo.trim()) {
+                    this.addNewTodo({ title: this.newTodo, completed: false });
+                    this.newTodo = ''; // Очистка поля ввода после добавления
+                }
+            },
         },
     };
 </script>
