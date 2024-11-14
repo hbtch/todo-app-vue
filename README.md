@@ -1,6 +1,6 @@
 # Тестовое задание ToDo-list для компании Wimark
 
-## [Ссылка для просмотра]https://todo-app-vue-flax.vercel.app/
+[Ссылка для просмотра]https://todo-app-vue-flax.vercel.app/
 
 # Что реализовано? 
 
