@@ -8,22 +8,15 @@
         </li>
     </template>
     
-    <script>
+<script>
     export default {
         props: {
         todo: Object,
         },
         methods: {
-        toggleTodo() {
-            this.$emit('toggle', this.todo.id);
-        },
+            toggleTodo() {
+                this.$emit('toggle', this.todo.id);
+            },
         },
     };
-    </script>
-    
-    <style scoped>
-    .completed {
-        text-decoration: line-through;
-    }
-    </style>
-    
+</script>

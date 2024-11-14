@@ -15,8 +15,8 @@ export default new Vuex.Store({
     // getters —  для доступа к данным в state
     getters: {
         allTodos: state => state.todos, // пример геттера для доступа к списку задач
-        activeTodos: state => state.todos.filter(todo => !todo.completed),
-        completedTodos: state => state.todos.filter(todo => todo.completed),
+        activeTodos: state => state.todos.filter((todo) => !todo.completed),
+        completedTodos: state => state.todos.filter((todo) => todo.completed),
         fetchStatus: state => state.status,
     },
     // actions — асинхронные операции, которые вызываются из компонентов
@@ -57,7 +57,7 @@ export default new Vuex.Store({
             state.todos.push(todo); // Добавляем новую задачу в массив задач
         },
         toggleTodo(state, id) {
-            const todo = state.todos.find(todo => todo.id === id);
+            const todo = state.todos.find((todo) => todo.id === id);
             if (todo) {
                 todo.completed = !todo.completed;
             }
