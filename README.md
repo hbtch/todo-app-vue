@@ -1,28 +1,28 @@
-<<<<<<< HEAD
-# todo-app-vue
-=======
-# todo-app
+# Тестовое задание ToDo-list для компании Wimark
 
-## Project setup
-```
-npm install
-```
+# Что реализовано? 
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+- возможность добавить новую тудушку
 
-### Compiles and minifies for production
-```
-npm run build
-```
+- отрисован список всех тудушек
 
-### Lints and fixes files
-```
-npm run lint
-```
+- возможность переключить тудушку в состояние “завершена” и обратно в “активна”
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
->>>>>>> db35e51 (init)
+- фильтр-панель: все, активные, завершенные
+
+- изначально список тудушек не пустой, 5 тудушек добавлены из файла todos.json
+
+- обработать 4-х состояний fetch-запросов Idle (до начала запроса), Loading, Error, Success
+
+-  загрузка данных из хранилища Vuex осуществляется при помощи экшена fetchTodos
+
+# Стек
+
+- Vue2 Option API (в коде используются опции data, computed, methods, и created, что является характерным для Options API, а также Vuex-хелперы: mapGetters и mapActions для подключения геттеров и экшенов из Vuex, что также более характерно для Vue 2.)
+
+- CSS
+
+- Стейт-менеджер Vuex
+
+- Для запросов - fetch
+
