@@ -44,6 +44,9 @@ export default new Vuex.Store({
         toggleTodoStatus({ commit }, id) {
             commit('toggleTodo', id);
         },
+        editTodoTitle({ commit }, { id, newTitle }) {
+            commit('updateTodoTitle', { id, newTitle });
+        },
     },
     // mutations — синхронные функции, которые изменяют state
     mutations: {
@@ -60,6 +63,12 @@ export default new Vuex.Store({
             const todo = state.todos.find((todo) => todo.id === id);
             if (todo) {
                 todo.completed = !todo.completed;
+            }
+        },
+        updateTodoTitle(state, { id, newTitle }) {
+            const todo = state.todos.find((todo) => todo.id === id);
+            if (todo) {
+                todo.title = newTitle;
             }
         },
     },

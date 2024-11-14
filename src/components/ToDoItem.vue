@@ -3,22 +3,55 @@
     <li class="todo-item">
         <label class="todo-label">
             <input type="checkbox" :checked="todo.completed" @change="toggleTodo" class="todo-checkbox" />
-            <span :class="{ completed: todo.completed }" class="todo-text">{{ todo.title }}</span>
+            <span v-if="!isEditing" :class="{ completed: todo.completed }" class="todo-text">{{ todo.title }}</span>
+            <input
+                v-else
+                type="text"
+                v-model="editedTitle"
+                @keyup.enter="saveEdit"
+                @blur="cancelEdit"
+                class="todo-input"
+            />
         </label>
+        <button v-if="!isEditing" @click="editTodo" class="edit-button">Edit</button>
     </li>
-    </template>
-    
+</template>
+
 <script>
-    export default {
-        props: {
+export default {
+    props: {
         todo: Object,
+    },
+    data() {
+        return {
+            isEditing: false,
+            // Начальное значение поля редактирования
+            editedTitle: this.todo.title, 
+        };
+    },
+    methods: {
+        toggleTodo() {
+            this.$emit('toggle', this.todo.id);
         },
-        methods: {
-            toggleTodo() {
-                this.$emit('toggle', this.todo.id);
-            },
+        editTodo() {
+            // Включаем режим редактирования
+            this.isEditing = true; 
+            // Загружаем текущее название задачи
+            this.editedTitle = this.todo.title; 
         },
-    };
+        saveEdit() {
+            if (this.editedTitle.trim()) {
+                this.$emit('edit', { id: this.todo.id, newTitle: this.editedTitle.trim() });
+                // Выходим из режима редактирования
+                this.isEditing = false; 
+            }
+        },
+        cancelEdit() {
+            // Выходим из режима редактирования без сохранения
+            this.isEditing = false; 
+        },
+    },
+};
 </script>
 
 <style scoped>
@@ -55,5 +88,20 @@
 .todo-text.completed {
     color: #888;
     text-decoration: line-through;
+}
+
+.edit-button {
+    margin-left: auto;
+    background-color: transparent;
+    border: none;
+    color: #007bff;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.todo-input {
+    font-size: 16px;
+    padding: 2px 4px;
+    flex-grow: 1;
 }
 </style>

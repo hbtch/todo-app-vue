@@ -15,7 +15,7 @@
             <ul v-if="status === 'success'" class="todo-list">
 <!-- :todo="todo" передача отдельной задачи как проп-->
 <!-- @toggle="toggleTodo обработка события чтобы переключить статус задачи -->
-                <TodoItem v-for="todo in filteredTodos" :key="todo.id" :todo="todo" @toggle="toggleTodo" />
+                <TodoItem v-for="todo in filteredTodos" :key="todo.id" :todo="todo" @toggle="toggleTodo" @edit="editTodoTitle"/>
             </ul>
         </div>
     </div>
@@ -63,7 +63,7 @@ export default {
     },
 // подключаем vuex экшены, fetchTodos загружает задачи из хранилища, toggleTodoStatus меняет статус задачи
     methods: {
-        ...mapActions(['fetchTodos', 'toggleTodoStatus', 'addNewTodo']),
+        ...mapActions(['fetchTodos', 'toggleTodoStatus', 'addNewTodo', 'editTodoTitle']),
 // toggleTodo вызывается когда происходит событие toggle
         toggleTodo(id) {
             this.toggleTodoStatus(id);
@@ -84,7 +84,13 @@ export default {
             this.currentFilter = 'completed';
         }
     },
-    },
+     // Метод для редактирования текста задачи
+        editTodo(id, newTitle) {
+            if (newTitle.trim()) {
+                this.editTodoTitle({ id, newTitle });
+            }
+        }
+},
 };
 </script>
 
