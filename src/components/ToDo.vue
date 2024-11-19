@@ -4,43 +4,49 @@
         <ToDoFilter @filter="setFilter" />
         <div class="todo-content">
             <div class="todo-input-container">
-                <input v-model="newTodo" placeholder="Введите новую задачу" class="todo-input" />
+                <input 
+                    v-model="newTodo" 
+                    placeholder="Введите новую задачу" 
+                    class="todo-input" 
+                />
                 <button @click="addTodo" class="todo-button">Добавить</button>
             </div>
             
-            <p v-if="status === 'loading'" class="status-message loading">Loading...</p>
-            <p v-if="status === 'error'" class="status-message error">Error loading todos</p>
-            <p v-if="status === 'idle'" class="status-message idle">Ready to fetch todos</p>
+            <p v-if="status === 'loading'" class="status-message loading">Загрузка...</p>
+            <p v-if="status === 'error'" class="status-message error">Ошибка загрузки задач</p>
+            <p v-if="status === 'idle'" class="status-message idle">Готово к загрузке задач</p>
             
             <ul v-if="status === 'success'" class="todo-list">
-<!-- :todo="todo" передача отдельной задачи как проп-->
-<!-- @toggle="toggleTodo обработка события чтобы переключить статус задачи -->
-                <TodoItem v-for="todo in filteredTodos" :key="todo.id" :todo="todo" @toggle="toggleTodo" @edit="editTodoTitle"/>
+                <!-- Компоненты задач -->
+                <TodoItem 
+                    v-for="todo in filteredTodos" 
+                    :key="todo.id" 
+                    :todo="todo" 
+                    @toggle="toggleTodo(todo.id)" 
+                    @edit="editTodo"
+                />
             </ul>
         </div>
     </div>
 </template>
 
 <script>
-// это хелперы из vuex, они позволяют подключать геттеры и экшены из vuex-хранилища
 import { mapGetters, mapActions } from 'vuex';
 import TodoItem from './ToDoItem.vue';
 import ToDoFilter from './ToDoFilter.vue';
 
 export default {
     components: {
-    TodoItem,
-    ToDoFilter,
+        TodoItem,
+        ToDoFilter,
     },
     data() {
         return {
             newTodo: '', // Для ввода текста новой задачи
-            currentFilter: null, // Свойство для хранения текущего фильтра
+            currentFilter: null, // Хранение текущего фильтра
         };
     },
     computed: {
-// allTodos возвращает массив всех задач из хранилища
-// fetchStatus возвращает текущий статус загрузки задач
         ...mapGetters(['allTodos', 'fetchStatus', 'activeTodos', 'completedTodos']),
         todos() {
             return this.allTodos;
@@ -51,46 +57,38 @@ export default {
         filteredTodos() {
             if (this.currentFilter === 'active') {
                 return this.activeTodos;
-            } else if (this.currentFilter === 'completed') {
+            }
+            if (this.currentFilter === 'completed') {
                 return this.completedTodos;
             }
             return this.allTodos;
-        }
+        },
     },
-// created инициирует загрузку задач из vuex
     created() {
         this.fetchTodos();
     },
-// подключаем vuex экшены, fetchTodos загружает задачи из хранилища, toggleTodoStatus меняет статус задачи
     methods: {
         ...mapActions(['fetchTodos', 'toggleTodoStatus', 'addNewTodo', 'editTodoTitle']),
-// toggleTodo вызывается когда происходит событие toggle
         toggleTodo(id) {
             this.toggleTodoStatus(id);
         },
         addTodo() {
-            if (this.newTodo && this.newTodo.toString().trim()) {
-                this.addNewTodo({ title: this.newTodo.trim(), completed: false });
-                this.newTodo = ''; // Очистка поля ввода после добавления
+            const trimmedTodo = this.newTodo.trim();
+            if (trimmedTodo) {
+                this.addNewTodo({ title: trimmedTodo, completed: false });
+                this.newTodo = ''; // Очистка поля ввода
             }
         },
-        // Устанавливаем текущий фильтр на основе выбранного фильтра
-        setFilter(filterTodos) {
-        if (filterTodos === this.allTodos) {
-            this.currentFilter = null;
-        } else if (filterTodos === this.activeTodos) {
-            this.currentFilter = 'active';
-        } else if (filterTodos === this.completedTodos) {
-            this.currentFilter = 'completed';
-        }
-    },
-     // Метод для редактирования текста задачи
-        editTodo(id, newTitle) {
-            if (newTitle.trim()) {
-                this.editTodoTitle({ id, newTitle });
+        setFilter(filter) {
+            this.currentFilter = filter;
+        },
+        editTodo({ id, title }) {
+            const trimmedTitle = title.trim();
+            if (trimmedTitle) {
+                this.editTodoTitle({ id, newTitle: trimmedTitle });
             }
-        }
-},
+        },
+    },
 };
 </script>
 
@@ -111,8 +109,8 @@ export default {
 
 .todo-content {
     width: 100%;
-    max-width: 700px; 
-    padding-left: 20px; 
+    max-width: 700px;
+    padding: 0 20px;
 }
 
 .todo-input-container {
@@ -126,7 +124,7 @@ export default {
     flex: 1;
     padding: 10px;
     font-size: 16px;
-    border-radius: 20px;
+    border-radius: 4px;
     border: 1px solid #ddd;
 }
 
