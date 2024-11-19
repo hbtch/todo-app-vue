@@ -69,8 +69,8 @@ export default {
             this.toggleTodoStatus(id);
         },
         addTodo() {
-            if (this.newTodo.trim()) {
-                this.addNewTodo({ title: this.newTodo, completed: false });
+            if (this.newTodo && this.newTodo.toString().trim()) {
+                this.addNewTodo({ title: this.newTodo.trim(), completed: false });
                 this.newTodo = ''; // Очистка поля ввода после добавления
             }
         },
