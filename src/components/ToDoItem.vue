@@ -1,4 +1,3 @@
-<!-- Этот компонент отвечает за отображение одной задачи (тудушки) -->
 <template>
     <li class="todo-item">
         <label class="todo-label">
@@ -35,20 +34,24 @@ export default {
         },
         editTodo() {
             // Включаем режим редактирования
-            this.isEditing = true; 
+            this.isEditing = true;
             // Загружаем текущее название задачи
-            this.editedTitle = this.todo.title; 
+            this.editedTitle = this.todo.title;
         },
         saveEdit() {
-            if (this.editedTitle.trim()) {
-                this.$emit('edit', { id: this.todo.id, newTitle: this.editedTitle.trim() });
+            const trimmedTitle = this.editedTitle.trim();
+            if (trimmedTitle && trimmedTitle !== this.todo.title) {
+                this.$emit('edit', { id: this.todo.id, newTitle: trimmedTitle });
                 // Выходим из режима редактирования
-                this.isEditing = false; 
+                this.isEditing = false;
+            } else {
+                // Если задача не изменилась, просто выходим из режима редактирования
+                this.cancelEdit();
             }
         },
         cancelEdit() {
             // Выходим из режима редактирования без сохранения
-            this.isEditing = false; 
+            this.isEditing = false;
         },
     },
 };

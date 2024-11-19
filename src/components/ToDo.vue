@@ -8,6 +8,7 @@
                     v-model="newTodo" 
                     placeholder="Введите новую задачу" 
                     class="todo-input" 
+                    @keydown.enter="addTodo" 
                 />
                 <button @click="addTodo" class="todo-button">Добавить</button>
             </div>
@@ -17,13 +18,12 @@
             <p v-if="status === 'idle'" class="status-message idle">Готово к загрузке задач</p>
             
             <ul v-if="status === 'success'" class="todo-list">
-                <!-- Компоненты задач -->
                 <TodoItem 
                     v-for="todo in filteredTodos" 
                     :key="todo.id" 
                     :todo="todo" 
                     @toggle="toggleTodo(todo.id)" 
-                    @edit="editTodo"
+                    @edit="editTodoTitle"
                 />
             </ul>
         </div>
@@ -44,13 +44,12 @@ export default {
         return {
             newTodo: '', // Для ввода текста новой задачи
             currentFilter: null, // Хранение текущего фильтра
+            isEditing: null, // Идентификатор редактируемой задачи
+            editedTitle: '', // Отредактированное название задачи
         };
     },
     computed: {
         ...mapGetters(['allTodos', 'fetchStatus', 'activeTodos', 'completedTodos']),
-        todos() {
-            return this.allTodos;
-        },
         status() {
             return this.fetchStatus;
         },
@@ -69,9 +68,11 @@ export default {
     },
     methods: {
         ...mapActions(['fetchTodos', 'toggleTodoStatus', 'addNewTodo', 'editTodoTitle']),
+        
         toggleTodo(id) {
             this.toggleTodoStatus(id);
         },
+        
         addTodo() {
             const trimmedTodo = this.newTodo.trim();
             if (trimmedTodo) {
@@ -79,14 +80,32 @@ export default {
                 this.newTodo = ''; // Очистка поля ввода
             }
         },
+
         setFilter(filter) {
             this.currentFilter = filter;
         },
-        editTodo({ id, title }) {
-            const trimmedTitle = title.trim();
+
+        // Метод редактирования задачи
+        editTodo(todo) {
+            this.isEditing = todo.id; // Запоминаем ID редактируемой задачи
+            this.editedTitle = todo.title; // Загружаем текущее название задачи
+        },
+
+        // Сохранение изменений
+        saveEdit() {
+            const trimmedTitle = this.editedTitle.trim();
             if (trimmedTitle) {
-                this.editTodoTitle({ id, newTitle: trimmedTitle });
+                this.editTodoTitle({ id: this.isEditing, newTitle: trimmedTitle });
+                this.isEditing = null; // Окончание редактирования
+            } else {
+                this.cancelEdit();
             }
+        },
+
+        // Отмена редактирования
+        cancelEdit() {
+            this.isEditing = null;
+            this.editedTitle = ''; // Очистить отредактированное название
         },
     },
 };

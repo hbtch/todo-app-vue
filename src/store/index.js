@@ -5,38 +5,38 @@ import axios from 'axios';
 Vue.use(Vuex);
 
 export default new Vuex.Store({
-    state: {
-        todos: [], // Начальное состояние - пустой массив задач
-        newTodo: '',
-        filter: '',
-        status: 'idle', // Статус загрузки данных
+  state: {
+    todos: [], // Начальное состояние - пустой массив задач
+    newTodo: '',
+    filter: '',
+    status: 'idle', // Статус загрузки данных
+  },
+  getters: {
+    allTodos: state => state.todos,
+    activeTodos: state => state.todos.filter(todo => !todo.completed),
+    completedTodos: state => state.todos.filter(todo => todo.completed),
+    fetchStatus: state => state.status, // Статус загрузки
+  },
+  actions: {
+    // Действие для получения задач с API
+    async fetchTodos({ commit }) {
+      commit('setStatus', 'loading'); // Устанавливаем статус загрузки
+      try {
+        // Выполняем запрос к API для получения задач
+        const response = await axios.get('https://jsonplaceholder.typicode.com/users/1/todos');
+        
+        // Ограничиваем количество задач до 5
+        const limitedTodos = response.data.slice(0, 5);
+        
+        // После получения данных, обновляем состояние
+        commit('setTodos', limitedTodos);
+        commit('setStatus', 'success'); // Устанавливаем статус успешной загрузки
+      } catch (error) {
+        // Обрабатываем ошибку, если запрос не удался
+        console.error('Ошибка загрузки данных:', error);
+        commit('setStatus', 'error'); // Устанавливаем статус ошибки
+      }
     },
-    getters: {
-        allTodos: state => state.todos,
-        activeTodos: state => state.todos.filter(todo => !todo.completed),
-        completedTodos: state => state.todos.filter(todo => todo.completed),
-        fetchStatus: state => state.status, // Статус загрузки
-    },
-    actions: {
-        // Действие для получения задач с API
-        async fetchTodos({ commit }) {
-        commit('setStatus', 'loading'); // Устанавливаем статус загрузки
-            try {
-                // Выполняем запрос к API для получения задач
-                const response = await axios.get('https://jsonplaceholder.typicode.com/users/1/todos');
-                
-                // Ограничиваем количество задач до 5
-                const limitedTodos = response.data.slice(0, 5);
-                
-                // После получения данных, обновляем состояние
-                commit('setTodos', limitedTodos);
-                commit('setStatus', 'success'); // Устанавливаем статус успешной загрузки
-            } catch (error) {
-                // Обрабатываем ошибку, если запрос не удался
-                console.error('Ошибка загрузки данных:', error);
-                commit('setStatus', 'error'); // Устанавливаем статус ошибки
-            }
-        },
     // Действие для добавления новой задачи
     addNewTodo({ commit }, todo) {
       const newTodo = { ...todo, id: Date.now() }; // Генерация уникального ID
@@ -48,7 +48,11 @@ export default new Vuex.Store({
     },
     // Действие для редактирования заголовка задачи
     editTodoTitle({ commit }, { id, newTitle }) {
-      commit('updateTodoTitle', { id, newTitle }); // Обновляем заголовок задачи
+      if (newTitle.trim()) { // Проверяем, чтобы заголовок не был пустым
+        commit('updateTodoTitle', { id, newTitle }); // Обновляем заголовок задачи
+      } else {
+        console.error('Заголовок не может быть пустым'); // Можно добавить обработку ошибки, если заголовок пустой
+      }
     }
   },
   mutations: {

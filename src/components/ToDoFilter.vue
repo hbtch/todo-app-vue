@@ -3,31 +3,24 @@
         <button @click="showAll" class="filter-button">All</button>
         <button @click="showActive" class="filter-button">Active</button>
         <button @click="showCompleted" class="filter-button">Completed</button>
-        </div>
-    </template>
+    </div>
+</template>
     
-    <script>
-// mapGetters это хелпер из vuex, упрощает доступ к геттерам vuex и связывает их с computed
-    import { mapGetters } from 'vuex';
-    
-    export default {
-        computed: {
-//  подключаем геттеры
-        ...mapGetters(['allTodos', 'activeTodos', 'completedTodos']),
-        },
-        methods: {
+<script>
+export default {
+    methods: {
         showAll() {
-            this.$emit('filter', this.allTodos);
+            this.$emit('filter', null); // передаем 'null' для всех задач
         },
         showActive() {
-            this.$emit('filter', this.activeTodos);
+            this.$emit('filter', 'active'); // передаем 'active' для активных задач
         },
         showCompleted() {
-            this.$emit('filter', this.completedTodos);
+            this.$emit('filter', 'completed'); // передаем 'completed' для завершенных задач
         },
-        },
-    };
-    </script>
+    },
+};
+</script>
 
 <style scoped>
 .filter-container {
